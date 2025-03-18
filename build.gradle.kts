@@ -11,6 +11,7 @@ plugins {
     id("org.polyfrost.defaults.loom")
     id("com.github.johnrengelman.shadow")
     id("net.kyori.blossom") version "1.3.2"
+    id("com.modrinth.minotaur") version "2.+"
     id("signing")
     java
 }
@@ -27,7 +28,7 @@ blossom {
 }
 
 version = mod_version
-group = "com.github.chromaticforge.rawinput"
+group = "com.github.chromaticforge.$mod_id"
 
 base {
     archivesName.set("$mod_archives_name-$platform")
@@ -157,5 +158,16 @@ tasks {
         dependsOn(shadowJar)
         archiveClassifier.set("")
         enabled = false
+    }
+
+    modrinth {
+        token.set(System.getenv("MODRINTH_TOKEN"))
+        projectId.set("modelfix-legacy")
+        versionType.set("release")
+        versionName.set(mod_version)
+        versionNumber.set("v$mod_version")
+        uploadFile.set(remapJar)
+        gameVersions.addAll(project.platform.mcVersionStr)
+        loaders.add(project.platform.loaderStr)
     }
 }
